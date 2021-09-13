@@ -4,7 +4,7 @@ from tensorflow.keras import layers as tkl
 from tensorflow.keras.optimizers import Adam
 from base_models.sv_model import SpeakerVerificationModel
 
-def make_model():
+def make_toy_model():
     input = tkl.Input(shape=(4,))
     FCN = tkl.Dense(10)(input)
     FCN = tkl.Dense(1, activation='sigmoid')(FCN)
@@ -16,7 +16,7 @@ def make_model():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    model = make_model()
+    model = make_toy_model()
     ones = np.ones(shape=(100, 4))
     zeros = np.zeros(shape=(100, 4))
     input = np.concatenate((ones, zeros))
