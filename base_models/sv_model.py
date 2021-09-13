@@ -1,9 +1,15 @@
 import tensorflow as tf
-# import numpy as np
+from scipy.optimize import brentq
+from sklearn.metrics import roc_curve
+from scipy.interpolate import interp1d
+
 
 def calculate_EER(cos_similarity, ground_truth):
-    #@TODO implement the EER numpy function
-    pass
+    fpr, tpr, thresholds = roc_curve(ground_truth, cos_similarity, pos_label=1)
+    eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
+    thresh = interp1d(fpr, thresholds)(eer)
+    return eer, thresh
+
 
 class SpeakerVerificationModel(tf.keras.Model):
     def test_step(self, data):
@@ -17,7 +23,7 @@ class SpeakerVerificationModel(tf.keras.Model):
         y_2_normal = tf.nn.l2_normalize(y_2_pred, 0)
         cos_similarity = tf.reduce_sum(tf.multiply(y_1_normal, y_2_normal))
         # Update the metrics.
-        EER = tf.numpy_function(
+        EER = tf.py_function(
                 calculate_EER, [cos_similarity, y], tf.float, name=None
               )
 
