@@ -26,7 +26,7 @@ class SpeakerVerificationModel(tf.keras.Model):
         EER = tf.py_function(
                 calculate_EER, [cos_similarity, y], tf.float, name=None
               )
-
+        
         # Return a dict mapping metric names to current value.
         # Note that it will include the loss (tracked in self.metrics).
         return {"EER": EER}
